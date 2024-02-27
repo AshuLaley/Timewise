@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.watcher.custom_exception.AddressNotFoundException;
 import com.watcher.custom_exception.ResourceNotFoundException;
 import com.watcher.dto.AddressDTO;
 import com.watcher.dto.AddressUpdateDto;
@@ -14,6 +15,8 @@ import com.watcher.entity.Address;
 import com.watcher.entity.User;
 import com.watcher.repository.AddressRepository;
 import com.watcher.repository.UserRepository;
+import java.util.List;
+
 
 
 @Service
@@ -30,29 +33,31 @@ public class AddressServiceImpl implements AddressService{
 	
 	
 	@Override
-	public AddressDTO getAddressDetails(int addressId) {
+	public AddressDTO getAddressDetails(int userId) {
 		
-		return mapper.map(addressRepository.findByUserId(addressId).orElseThrow(
-				() -> new ResourceNotFoundException("Invalid User  Id Or Address not yet assigned !!!!")),
-				AddressDTO.class);	
+		 List<Address> addresses = addressRepository.findByUserId(userId);
+
+		    if (addresses.isEmpty()) {
+		        throw new AddressNotFoundException("No address found for the user");
+		    }
+		    Address address = addresses.get(addresses.size() - 1);
+
+		    return mapper.map(address, AddressDTO.class);
 	}
 	
 	@Override
-	public ApiResponse assignUserAddress( AddressDTO addressDto) {
-		System.out.println("------------------one");
-
+	public AddressDTO assignUserAddress( AddressDTO addressDto) {
+	
 		Address address=mapper.map(addressDto, Address.class);
-		System.out.println("------------------two");
 
 		User user=userRepository.findById(addressDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("Invalid Customer ID"));
-		System.out.println("------------------three");
 		user.addAddress(address);
-		System.out.println("------------------four");
+
 		addressRepository.save(address);
 		
 
 		
-		return  new ApiResponse("Assigned new address to User , " + user.getFirstname());
+		return  addressDto;
 	}
 
 //	@Override
@@ -78,7 +83,7 @@ public class AddressServiceImpl implements AddressService{
 	    Address addressEntity = user.getAddresses().stream()
 	            .filter(address -> address.getUser().getId()==addressDto.getUserId())
 	            .findFirst()
-	            .orElseThrow(() -> new ResourceNotFoundException("Address not found for user with id: " + userId));
+	            .orElseThrow(() -> new AddressNotFoundException("Address not found for user with id: " + userId));
 
 	    // Map the properties from AddressDTO to Address entity
 	    mapper.map(addressDto, addressEntity);

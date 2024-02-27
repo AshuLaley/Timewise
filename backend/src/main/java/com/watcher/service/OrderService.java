@@ -16,4 +16,6 @@ public interface OrderService {
 	List<OrderDto> getAllOrders();
 	
 	OrderDto updateOrder(String emailId, int orderId, String orderStatus);
+	
+	long getNumberOfOrders();
 }

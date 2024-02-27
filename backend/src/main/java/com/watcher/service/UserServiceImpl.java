@@ -154,7 +154,10 @@ public class UserServiceImpl implements UserService {
 		return "User with userId " + userId + " deleted successfully!!!";
 	}
 
-	
+	 public long getNumberOfUsersWithUserRoleUser() {
+	        // Get the count of users with role 'USER'
+	        return userRepository.countByRole(Role.USER);
+	    }
 	
 //	@Override
 //	public AuthenticationResponse register(RegisterRequest request);{

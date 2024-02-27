@@ -9,11 +9,17 @@ const Checkout = () => {
   const [cart, setCart] = useState({ id: 0, userId: 0, name: '', totalPrice: 0, product: [] });
   const [userAddress, setUserAddress] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [emailId, setEmailId] = useState("")
+  //const [userid, setUserid] = useState('');
   const navigate = useNavigate();
-
+ // let emailId = "";
+  let userid='';
+  let paymentMethod='cod';
   const handleCheckout = async () => {
     // Add any additional logic or API calls needed before navigating to /checkout
-
+    console.log("2---------------------",emailId)
+    //                                           public/users/{emailId}/carts/{cartId}/payments/{paymentMethod}
+     await axios.post(`http://localhost:8082/api/public/users/${emailId}/carts/${cartId}/payments/${paymentMethod}`);
     // Simulate placing the order
     // Replace the following line with actual logic or API call
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -26,6 +32,17 @@ const Checkout = () => {
       navigate('/');
     }, 5000);
   };
+  useEffect(() => {
+    // Retrieve data from local storage
+    const storedData = JSON.parse(localStorage.getItem('data'));
+
+    // Check if data and user object exi
+      // Extract and set the userId
+      userid=storedData.user.id
+      setEmailId(storedData.user.email)
+      console.log(storedData.user.id,"--------",emailId)
+     // setUserid(storedData.user.id);
+  }, []);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -35,7 +52,7 @@ const Checkout = () => {
 
         // Fetch user address
         const userId = cartResponse.data.userId;
-        const addressResponse = await axios.get(`http://localhost:8082/api/public/user/address/${userId}`);
+        const addressResponse = await axios.get(`http://localhost:8082/api/public/user/address/${userid}`);
         setUserAddress(addressResponse.data);
 
       } catch (error) {

@@ -18,8 +18,8 @@ import lombok.ToString;
 @ToString
 public class AddressDTO {
 	
-	@JsonProperty(access = Access.READ_ONLY)
-	private Long addressId;
+	
+	private int id;
 	
 	private String street;
 	

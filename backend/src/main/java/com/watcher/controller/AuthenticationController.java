@@ -29,11 +29,17 @@ public class AuthenticationController {
 	@Autowired
 	private AuthenticationService service;
 
-	@PostMapping("/register")
+	@PostMapping("/user/register")
 	public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
 		
 		return ResponseEntity.ok(service.register(request));
 	}
+	@PostMapping("/admin/register")
+	public ResponseEntity<AuthenticationResponse> adminRegister(@RequestBody RegisterRequest request){
+		
+		return ResponseEntity.ok(service.adminRegister(request));
+	}
+
 
 	@PostMapping("/authenticate")
 	public ResponseEntity<AuthenticationResponse> register(@RequestBody AuthenticationRequest request){

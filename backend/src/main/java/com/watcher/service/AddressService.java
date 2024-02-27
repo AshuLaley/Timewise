@@ -9,7 +9,7 @@ import com.watcher.entity.Address;
 
 public interface AddressService {
 	
-	ApiResponse assignUserAddress(  AddressDTO address);		
+	AddressDTO assignUserAddress(  AddressDTO address);		
 
 	//	get address details
 	AddressDTO getAddressDetails(int userId);

@@ -19,6 +19,8 @@ import com.watcher.entity.Category;
 import com.watcher.entity.Product;
 import com.watcher.service.ProductService;
 
+import io.jsonwebtoken.io.IOException;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin("http://localhost:3000")
@@ -81,5 +83,11 @@ public class ProductController {
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
 	    }
+	}
+	
+	@GetMapping("/admin/NumberOfProducts")
+	public ResponseEntity<?> getTotalUser() throws IOException {
+		System.out.println("-----------------------------get users" );
+		return ResponseEntity.ok(productService.getNumberOfProducts());
 	}
 }

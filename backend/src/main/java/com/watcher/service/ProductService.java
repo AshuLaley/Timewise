@@ -25,5 +25,5 @@ public interface ProductService {
 
    Product updateProductQuantity(int productId, int quantity) ;
 
-	 
+   long getNumberOfProducts();
 }

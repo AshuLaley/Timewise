@@ -22,6 +22,7 @@ public interface UserService {
 	
 	int getCartIdByUserId(int userId);
 	
+	long getNumberOfUsersWithUserRoleUser();
 
 	
 //		List<UserDto> getAllUsers();

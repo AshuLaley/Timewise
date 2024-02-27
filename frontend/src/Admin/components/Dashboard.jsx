@@ -10,51 +10,76 @@ const Dashboard = () => {
     const [productsChartData, setProductsChartData] = useState(null);
     const [ordersChartData, setOrdersChartData] = useState(null);
 
+
+    
+
     useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                const productsResponse = await axios.get('/api/dashboard/products');
-                const ordersResponse = await axios.get('/api/dashboard/orders');
-                const customersResponse = await axios.get('/api/dashboard/customers');
-
-                setTotalProducts(productsResponse.data.totalProducts);
-                setTotalOrders(ordersResponse.data.totalOrders);
-                setTotalCustomers(customersResponse.data.totalCustomers);
-
-                const productsChartData = {
-                    labels: productsResponse.data.labels,
-                    datasets: [
-                        {
-                            label: 'Products',
-                            data: productsResponse.data.data,
-                            fill: false,
-                            borderColor: 'rgba(75,192,192,1)',
-                        },
-                    ],
-                };
-
-                const ordersChartData = {
-                    labels: ordersResponse.data.labels,
-                    datasets: [
-                        {
-                            label: 'Orders',
-                            data: ordersResponse.data.data,
-                            backgroundColor: 'rgba(75,192,192,0.2)',
-                            borderColor: 'rgba(75,192,192,1)',
-                            borderWidth: 1,
-                        },
-                    ],
-                };
-
-                setProductsChartData(productsChartData);
-                setOrdersChartData(ordersChartData);
-            } catch (error) {
-                console.error('Error fetching dashboard data:', error.message);
-            }
+        // http://localhost:8082/api/public/${productId}
+        try {
+            axios.get(`http://localhost:8082/api/admin/NumberOfOrders`)
+                .then(response => setTotalOrders(response.data));
+    
+            axios.get(`http://localhost:8082/api/admin/totalUser`)
+                .then(response => setTotalCustomers(response.data));
+    
+            axios.get(`http://localhost:8082/api/admin/NumberOfProducts`)
+                .then(response => setTotalProducts(response.data));
+    
+        } catch (error) {
+            console.error('Error fetching product details', error);
         };
-
-        fetchDashboardData();
     }, []);
+
+    //useEffect(() => {
+
+
+
+    //     const fetchDashboardData = async () => {
+    //         try {
+    //             const productsResponse = await axios.get('http://localhost:8082/api/admin/NumberOfProducts');
+    //             const ordersResponse = await axios.get('http://localhost:8082/api/admin/NumberOfOrders');
+    //             const customersResponse = await axios.get('http://localhost:8082/api/admin/totalUser');
+
+    //             setTotalProducts(productsResponse.data.totalProducts);
+    //             setTotalOrders(ordersResponse.data.totalOrders);
+    //             setTotalCustomers(customersResponse.data.totalCustomers);
+
+                
+
+    //             const productsChartData = {
+    //                 labels: productsResponse.data.labels,
+    //                 datasets: [
+    //                     {
+    //                         label: 'Products',
+    //                         data: productsResponse.data.data,
+    //                         fill: false,
+    //                         borderColor: 'rgba(75,192,192,1)',
+    //                     },
+    //                 ],
+    //             };
+
+    //             const ordersChartData = {
+    //                 labels: ordersResponse.data.labels,
+    //                 datasets: [
+    //                     {
+    //                         label: 'Orders',
+    //                         data: ordersResponse.data.data,
+    //                         backgroundColor: 'rgba(75,192,192,0.2)',
+    //                         borderColor: 'rgba(75,192,192,1)',
+    //                         borderWidth: 1,
+    //                     },
+    //                 ],
+    //             };
+
+    //             setProductsChartData(productsChartData);
+    //             setOrdersChartData(ordersChartData);
+    //         } catch (error) {
+    //             console.error('Error fetching dashboard data:', error.message);
+    //         }
+    //     };
+
+    //     fetchDashboardData();
+    // }, []);
 
     return (
         <div className="flex flex-wrap w-full">

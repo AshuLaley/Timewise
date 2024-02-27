@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.watcher.dto.OrderDto;
 import com.watcher.service.OrderService;
+import com.watcher.service.UserService;
+
+import io.jsonwebtoken.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -26,7 +29,7 @@ public class OrderController {
 	@Autowired
 	public OrderService orderService;
 	
-	@PostMapping("/public/users/{emailId}/carts/{cartId}/payments/{paymentMethod}/order")
+	@PostMapping("/public/users/{emailId}/carts/{cartId}/payments/{paymentMethod}")
 	public ResponseEntity<OrderDto> orderProducts(@PathVariable String emailId, @PathVariable int cartId, @PathVariable
 			String paymentMethod) {
 		System.out.println("start--------------------------");
@@ -56,5 +59,11 @@ public class OrderController {
 	public ResponseEntity<OrderDto> updateOrderByUser(@PathVariable String emailId, @PathVariable int orderId, @PathVariable String orderStatus) {
 		return ResponseEntity.ok(orderService.updateOrder(emailId, orderId, orderStatus));
 		
+	}
+	
+	@GetMapping("/admin/NumberOfOrders")
+	public ResponseEntity<?> getTotalUser() throws IOException {
+		System.out.println("-----------------------------get users" );
+		return ResponseEntity.ok(orderService.getNumberOfOrders());
 	}
 }

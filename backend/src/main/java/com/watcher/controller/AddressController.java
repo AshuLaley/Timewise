@@ -41,7 +41,7 @@ public class AddressController {
 	@PostMapping("/public/user/address/add")
 	public ResponseEntity<?> assignUserAddress(
 			@RequestBody AddressDTO address) {
-		System.out.println("in assign adr " + address.getUserId() + " " + address);
+//		System.out.println("in assign adr " + address.user.getId() + " " + address);
 		return ResponseEntity.status(HttpStatus.CREATED).body(addressService.assignUserAddress( address));
 	}
 

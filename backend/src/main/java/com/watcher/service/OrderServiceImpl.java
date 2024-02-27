@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.watcher.custom_exception.ApiException;
+import com.watcher.custom_exception.CartNotFoundException;
+import com.watcher.custom_exception.OrderNotFoundException;
 import com.watcher.custom_exception.ResourceNotFoundException;
 import com.watcher.dto.OrderDto;
 import com.watcher.dto.OrderItemDto;
@@ -22,6 +24,7 @@ import com.watcher.entity.OrderItem;
 import com.watcher.entity.Payment;
 import com.watcher.entity.Product;
 import com.watcher.entity.User;
+import com.watcher.repository.CartItemRepository;
 import com.watcher.repository.CartRepository;
 import com.watcher.repository.OrderItemRepository;
 import com.watcher.repository.OrderRepository;
@@ -53,13 +56,15 @@ public class OrderServiceImpl implements OrderService{
 	private CartService cartService;
 	
 	@Autowired
+	CartItemRepository cartItemRepository;
+	@Autowired
 	public ModelMapper mapper;
 	
 	@Override
 	public OrderDto placeOrder(String emailId, int cartId, String paymentMethod) {
 		System.out.println("1--------------------------"+cartId);
 		Cart cart = cartRepository.findById(cartId)
-				.orElseThrow(()-> new ResourceNotFoundException("Cart Not Found"));
+				.orElseThrow(()-> new CartNotFoundException("Cart Not Found"));
 
 
 		Order order = new Order();
@@ -123,16 +128,21 @@ public class OrderServiceImpl implements OrderService{
 //		orderDTO.setOrderProduct(convertProducts(order.getOrderItems()));
 		orderDTO.setEmail(order.getEmail());
 
+		deleteAllCartItemsByCartId(cart.getId());
+		
 		return orderDTO;
 	}
-
+	public void deleteAllCartItemsByCartId(int cartId) {
+        System.out.println("------------------------------");
+		cartItemRepository.deleteByCartId(cartId);
+    }
 	@Override
 	public OrderDto getOrder(String emailId, int orderId) {
 		
 		Order order = orderRepository.findOrderByEmailAndId(emailId, orderId);
 
 		if (order == null) {
-			throw new ResourceNotFoundException("OrderId"+orderId);
+			throw new OrderNotFoundException("OrderId"+orderId);
 		}
 
 		OrderDto orderDTO = mapper.map(order, OrderDto.class);
@@ -188,7 +198,7 @@ public class OrderServiceImpl implements OrderService{
 		Order order = orderRepository.findOrderByEmailAndId(emailId, orderId);
 
 		if (order == null) {
-			throw new ResourceNotFoundException("OrderId"+orderId);
+			throw new OrderNotFoundException("OrderId"+orderId);
 		}
 
 		order.setOrderStatus(orderStatus);
@@ -205,4 +215,9 @@ public class OrderServiceImpl implements OrderService{
 	            })
 	            .collect(Collectors.toList());
 	}
+	
+	 public long getNumberOfOrders() {
+	        // Using the count() method from JpaRepository to get the number of orders
+	        return orderRepository.count();
+	    }
 }

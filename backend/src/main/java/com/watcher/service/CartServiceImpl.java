@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.watcher.custom_exception.ApiException;
+import com.watcher.custom_exception.CartNotFoundException;
+import com.watcher.custom_exception.ProductNotFoundException;
 import com.watcher.custom_exception.ResourceNotFoundException;
 import com.watcher.dto.CartDto;
 import com.watcher.dto.ProductDto;
@@ -46,10 +48,10 @@ public class CartServiceImpl implements CartService {
 	public String addProductToCart(int cartId, int productId, int quantity) {
 		
 		Cart cart = cartRepository.findById(cartId)
-					.orElseThrow(()-> new ResourceNotFoundException("cartId"+cartId));
+					.orElseThrow(()-> new CartNotFoundException("cartId"+cartId));
 		
 		Product product = productRepository.findById(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("productId"+ productId));
+				.orElseThrow(() -> new ProductNotFoundException("productId"+ productId));
 
 		CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
 		
@@ -115,17 +117,35 @@ public class CartServiceImpl implements CartService {
 		
 	}
 	
+//	@Override
+//	public CartDto getCartById(int cartId) {
+//		System.out.println("-------"+1);
+//		Cart cart = cartRepository.findById(cartId)
+//				.orElseThrow(() -> new CartNotFoundException("Cart Not Found"));
+//		System.out.println(cart);
+//
+//		CartDto cartDto = mapper.map(cart, CartDto.class);
+//		System.out.println(cartDto);
+//		cartDto.setProduct(convertProducts(cart.getCartItem()));
+//		cartDto.setUserId(cart.getUser().getId());
+//		cartDto.setName(cart.getUser().getFirstname());
+//	
+//		return cartDto;
+//	}
+	
 	@Override
 	public CartDto getCartById(int cartId) {
 		Cart cart = cartRepository.findById(cartId)
 				.orElseThrow(() -> new ResourceNotFoundException("Cart Not Found"));
 		
+		            
 		CartDto cartDto = mapper.map(cartRepository.findById(cartId), CartDto.class);
+		
+		List<ProductDto> products = cart.getCartItem().stream()
+				.map(p -> mapper.map(p.getProduct(), ProductDto.class)).collect(Collectors.toList());
 
-		cartDto.setProduct(convertProducts(cart.getCartItem()));
-		cartDto.setUserId(cart.getUser().getId());
-		cartDto.setName(cart.getUser().getFirstname());
-	
+		cartDto.setProduct(products);
+
 		return cartDto;
 	}
 
@@ -134,10 +154,10 @@ public class CartServiceImpl implements CartService {
 	public CartDto updateProductQuantityInCart(int cartId, int productId, int quantity) {
 		
 		Cart cart = cartRepository.findById(cartId)
-				.orElseThrow(() -> new ResourceNotFoundException("CartId"+ cartId));
+				.orElseThrow(() -> new CartNotFoundException("CartId"+ cartId));
 
 		Product product = productRepository.findById(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("ProductId"+ productId));
+				.orElseThrow(() -> new ProductNotFoundException("ProductId"+ productId));
 
 		if (product.getQuantity() == 0) {
 			throw new ApiException(product.getTitle() + " is not available");
@@ -177,10 +197,10 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public void updateProductInCarts(int cartId, int productId) {
 		Cart cart = cartRepository.findById(cartId)
-				.orElseThrow(() -> new ResourceNotFoundException("CartId"+ cartId));
+				.orElseThrow(() -> new CartNotFoundException("CartId"+ cartId));
 
 		Product product = productRepository.findById(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("ProductId"+ productId));
+				.orElseThrow(() -> new ProductNotFoundException("ProductId"+ productId));
 
 		CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
 
@@ -201,7 +221,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public String deleteProductFromCart(int cartId, int productId) {
 		Cart cart = cartRepository.findById(cartId)
-				.orElseThrow(() -> new ResourceNotFoundException("CartId"+cartId));
+				.orElseThrow(() -> new CartNotFoundException("CartId"+cartId));
 
 		CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
 

@@ -92,5 +92,25 @@ public class AuthenticationService {
 	      var jwt = jwtService.generateToken(emp);
 	      return JwtAuthenticationResponse.builder().token(jwt).build();
 	  }
-	*/  
+	*/
+
+	public AuthenticationResponse adminRegister(RegisterRequest request) {
+		 var user = User.builder()
+                 .firstname(request.getFirstname())
+                 .lastname(request.getLastname())
+                 .email(request.getEmail())
+                 .password(passwordEncoder.encode(request.getPassword()))
+                 .mobile(request.getMobile())
+                 .age(request.getAge())
+                 .registerDate(LocalDate.now())
+                 .role(Role.ADMIN)
+                 .build();
+       
+       Cart cart = new Cart();
+       cart.setUser(user);
+		user.setCart(cart);
+     user = userRepository.save(user);
+     var jwtToken = jwtService.generateToken(user);
+     return AuthenticationResponse.builder().token(jwtToken).build();
+	}  
 }

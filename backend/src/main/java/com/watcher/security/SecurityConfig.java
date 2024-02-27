@@ -41,6 +41,7 @@ public class SecurityConfig {
 			"/v*/api-doc*/**",
 			"/swagger-ui/**",
 			"/api/user/**",
+			
 			"/api/admin/**",
 			"/api/public/**",
 			"api/admin/**"
@@ -50,18 +51,19 @@ public class SecurityConfig {
 //			"/product/**"
 	};
 	
-//	public static final String[] ADMIN_URLS= {
+	public static final String[] ADMIN_URLS= {
 //			"/api/admin/**",
-//			"/product/update/**",
-//			"/product/add",
-//			"/product/delete/**",
-//			"/order/admin/**",
-//			"/cart/admin/**",
-//			"/user/demo"
-//	};
-//	public static final String[] USER_URLS= {
-//			"/api/public/**"
-//	};
+//			"/api/product/update/**",
+//			"/api/product/add",
+//			"/api/product/delete/**",
+//			"/api/order/admin/**",
+//			"/api/cart/admin/**",
+//			"/api/user/demo"
+	};
+	public static final String[] USER_URLS= {
+//			"/api/public/**",
+//			"/api/user/**"
+	};
 
 //	private AuthenticationProvider authenticationProvider;
 //	@Autowired

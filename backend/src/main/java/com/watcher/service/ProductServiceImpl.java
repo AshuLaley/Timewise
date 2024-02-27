@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.watcher.custom_exception.ProductNotFoundException;
 import com.watcher.custom_exception.ResourceNotFoundException;
 import com.watcher.dto.ApiResponse;
 import com.watcher.dto.ProductDto;
@@ -45,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public ProductDto getProductById(int productId) {
 		Product product = productRepository.findById(productId)
-				.orElseThrow(()-> new ResourceNotFoundException("Invalid product ID !!"));
+				.orElseThrow(()-> new ProductNotFoundException("Invalid product ID !!"));
 		
 		return mapper.map(product, ProductDto.class);
 	}
@@ -58,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
 				.collect(Collectors.toList());
 		
 		 if (productList.isEmpty()) {
-	           throw new  ResourceNotFoundException("Product Not available user this category!!!");
+	           throw new  ProductNotFoundException("Product Not available user this category!!!");
 	        }
 		return productList;
 	}
@@ -71,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 				.collect(Collectors.toList());;
 		
 		 if (productList.isEmpty()) {
-	           throw new  ResourceNotFoundException("This color Product Not available ");
+	           throw new  ProductNotFoundException("This color Product Not available ");
 	        }
 		return productList;
 	}
@@ -98,7 +99,7 @@ public class ProductServiceImpl implements ProductService {
 	public Product updateProductQuantity(int productId, int quantity) {
 	    
 	    Product product = productRepository.findById(productId)
-	            .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+	            .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
 	    // Update the quantity
 	    product.setQuantity(quantity);
@@ -106,5 +107,10 @@ public class ProductServiceImpl implements ProductService {
 	    // Save the updated product to the database
 	    return productRepository.save(product);
 	}
+	
+	 public long getNumberOfProducts() {
+	        // Using the count() method from JpaRepository to get the number of products
+	        return productRepository.count();
+	    }
 
 }

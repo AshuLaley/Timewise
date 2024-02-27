@@ -81,4 +81,10 @@ public class UserController {
 			return ResponseEntity.ok(userService.getCartIdByUserId(userId));
 		}
 		
+		@GetMapping("/admin/totalUser")
+		public ResponseEntity<?> getTotalUser() throws IOException {
+			System.out.println("-----------------------------get users" );
+			return ResponseEntity.ok(userService.getNumberOfUsersWithUserRoleUser());
+		}
+		
 }
