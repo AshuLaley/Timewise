@@ -9,6 +9,9 @@ const Cart = () => {
   const [cart, setCart] = useState({ id: 0, userId: 0, name: '', totalPrice: 0, product: [] });
   const navigate = useNavigate();
 
+  // Define the discount percentage
+  const discountPercentage = 10; // Example discount percentage
+
   const handleCheckout = () => {
     // Add any additional logic or API calls needed before navigating to /checkout
 
@@ -32,6 +35,9 @@ const Cart = () => {
     fetchCart();
   }, [cartId]);
 
+  // Calculate the discount amount
+  const discountAmount = (cart.totalPrice * discountPercentage) / 100;
+
   return (
     <div>
       <div className="lg:grid grid-cols-3 lg:px-16 relative">
@@ -54,7 +60,7 @@ const Cart = () => {
               </div>
               <div className="flex justify-between">
                 <span>Discount</span>
-                <span className="text-green-700">₹--</span>
+                <span className="text-green-700">₹{discountAmount}</span>
               </div>
               <div className="flex justify-between">
                 <span>Delivery Charges</span>
